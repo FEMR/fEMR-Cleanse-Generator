@@ -60,12 +60,12 @@ input[type="submit"] {
      background-color: #ad0000;
      border-radius: 0px;
      border: 0px;
-     padding: 4%;
+     padding: .5%;
      box-sizing: border-box;
      object-position: center;
      object-fit: fill;
      position: static;
-     width: 100%;
+     width: 20%;
      color: #FFFFFF;
      text-align: center;
      cursor: pointer;
