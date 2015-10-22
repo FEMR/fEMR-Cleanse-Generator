@@ -70,23 +70,6 @@ while($row = $resultQuery->fetch_array())
 	}
 }
 
-
-// Some server-side processsing fun!
-$table = 'patients';
-
-// Primary key
-$primaryKey = 'id';
-
-// Array of database columns which should be read and sent back to DataTables.
-// The `db` parameter represents the column name in the database, while the `dt`
-// parameter represents the DataTables column identifier. In this case simple
-// indexes
-$columns = array(
-    array( 'db' => 'id', 'dt' => 0 ),
-    array( 'db' => 'city',  'dt' => 1 ),
-    array( 'db' => 'city_suggestion',   'dt' => 2 )
-);
-
 ?>
 
 <!DOCTYPE html>
@@ -98,43 +81,12 @@ $columns = array(
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    //Datatables Resources
-    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
-    <script type="text/javascript" language="javascript" src="js/jquery.js"></script>
-    <script type="text/javascript" language="javascript" src="js/jquery.dataTables.js"></script>
 
     <link href="css/bootstrap.css" rel="stylesheet">
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
   </head>
-  <body>
-    <table id="city-grid"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
-          <thead>
-              <tr>
-                  <th>ID</th>
-                  <th>Field in Question</th>
-                  <th>Suggestive Fix</th>
-              </tr>
-          </thead>
-  </table>
+<body>
 
-  <script type="text/javascript" language="javascript" >
-    $(document).ready(function() {
-        var dataTable = $('#city-grid').DataTable( {
-            "processing": true,
-            "serverSide": true,
-            "ajax":{
-                url :"city-grid-data.php", // json datasource
-                type: "get",  // method  , by default get
-                error: function(){  // error handling
-                    $(".city-grid-error").html("");
-                    $("#city-grid").append('<tbody class="city-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
-                    $("#city-grid_processing").css("display","none");
-
-                }
-            }
-        } );
-    } );
-</script>
   </body>
   </html>
