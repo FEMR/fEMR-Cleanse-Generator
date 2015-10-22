@@ -15,16 +15,8 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
+use femr;
 
---
--- Database: `femr`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `chief_complaints`
---
 
 CREATE TABLE IF NOT EXISTS `chief_complaints` (
 `id` int(11) NOT NULL,
