@@ -1,6 +1,6 @@
 # fEMR-Cleanse-Generator
 
-This standalone application is created to be used directly with fEMR (https://github.com/FEMR/femr).
+This standalone web application is created to be used directly with fEMR (https://github.com/FEMR/femr).
 
 ### Description
 
