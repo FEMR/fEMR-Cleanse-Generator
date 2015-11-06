@@ -30,7 +30,7 @@ if($conn->connect_error){
 //Grab the count of the number of cities PATIENTS
 //SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM mission_cities)
 //SELECT city, id FROM femr.patients LIMIT 5
-$patientCities = "SELECT city, id FROM femr.patients LIMIT 5";
+$patientCities = "SELECT city, id FROM femr.patients WHERE city NOT IN(SELECT name FROM mission_cities) LIMIT 25";
 
 $resultQuery = $conn->query($patientCities);
 $countQuery = mysqli_field_count($conn);
@@ -69,33 +69,31 @@ while($row = $resultQuery->fetch_array())
 {
 	for($i = 0; $i < $countQuery - 1; $i++)
 	{
+    $levField = array();
+    $cityField = array();
 		while($row2 = $resultQuery2->fetch_array())
 		{
 			for($j = 0; $j < $countQuery2; $j++)
 			{
 				$lev = levenshtein ($row[$i], $row2[$j]);
 
-				// check for an exact match
-				if($lev == 0)
-				{
-					//closest word is this one
-					$closest = $row2[$j];
-					$shortest = 0;
-
-					//break out, found exact match
-					break;
-				}
 
         // if not exact match, check to see if it's the shortest so far
-        if ($lev <= $shortest || $shortest < 0) {
+        if ($lev < "3") {
             // set the closest match, and shortest distance
-            $closest  = $row2[$j];
-            $shortest = $lev;
+            array_push($levField, $lev);
+            array_push($cityField, $row2[$j]);
         }
 			}
 		}
 		$resultQuery2->data_seek(0);
-  if( $shortest < 3 && $shortest != 0): ?>
+
+    if(count($levField) > "5")
+      $maxCount = 5;
+    else
+      $maxCount = count($levField);
+    array_multisort($levField, $cityField);
+  if(count($levField) != "0"): ?>
 
          <tr>
            <td align='left' width="40%"> <?php  echo $row[$i]; ?> </td>
@@ -103,7 +101,12 @@ while($row = $resultQuery->fetch_array())
             <td align='left'><div class='btn-group'>
             <form  action='index.php' method='POST'>
                 <input type="hidden" name="id" value="<?php echo $row[$i+1]; ?>">
-                <input type="text" name="suggestivecity" value="<?php echo $closest ?>">
+
+              <?php
+              for($k = 0; $k < $maxCount; $k++){
+               ?>  <?php echo $cityField[$k]; echo "<br>"; ?>          <?php }?>
+  <input type="text" name="suggestivecity" value="Enter city">
+             </td>
                 <td align='center' width="5%"><button type="submit" name="update" value="update" class="btn btn-success">Update</button>
                 <!-- <button type="submit" name="newfield" value="newfield" class="btn btn-success">SuggestNew</button> -->
             </form>
