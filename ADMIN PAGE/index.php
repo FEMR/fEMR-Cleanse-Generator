@@ -30,7 +30,7 @@ if($conn->connect_error){
 //Grab the count of the number of cities PATIENTS
 //SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM mission_cities)
 //SELECT city, id FROM femr.patients LIMIT 5
-$patientCities = "SELECT city, id FROM femr.patients WHERE city NOT IN(SELECT name FROM mission_cities) LIMIT 25";
+$patientCities = "SELECT city, id FROM femr.patients WHERE city NOT IN(SELECT name FROM mission_cities) LIMIT 5";
 
 $resultQuery = $conn->query($patientCities);
 $countQuery = mysqli_field_count($conn);
@@ -98,14 +98,20 @@ while($row = $resultQuery->fetch_array())
          <tr>
            <td align='left' width="40%"> <?php  echo $row[$i]; ?> </td>
 
-            <td align='left'><div class='btn-group'>
-            <form  action='index.php' method='POST'>
-                <input type="hidden" name="id" value="<?php echo $row[$i+1]; ?>">
+           <td align='left'><div class='btn-group'>
+           <form  action='index.php' method='POST'>
+               <input type="hidden" name="id" value="<?php echo $row[$i+1]; ?>">
+              <select id="choice" class="form-control" name="test">
+                   <?php
+                   for($k = 0; $k < $maxCount; $k++){
+                    ?>
+<option value="<?php echo $cityField[$k]; ?>"><?php echo $cityField[$k]; ?></option>
+                  <?php }?>
+                   <option value="other">Other</option>
+</select>
+<input type='text' id="other" class="hidden form-control" name="suggestivecity" value="other2">
+  <!-- <input type="text" name="suggestivecity" value="Enter city"> -->
 
-              <?php
-              for($k = 0; $k < $maxCount; $k++){
-               ?>  <?php echo $cityField[$k]; echo "<br>"; ?>          <?php }?>
-  <input type="text" name="suggestivecity" value="Enter city">
              </td>
                 <td align='center' width="5%"><button type="submit" name="update" value="update" class="btn btn-success">Update</button>
                 <!-- <button type="submit" name="newfield" value="newfield" class="btn btn-success">SuggestNew</button> -->
@@ -134,9 +140,17 @@ while($row = $resultQuery->fetch_array())
 <?php
   if (isset($_POST['update']))
   {
-    $UpdateQuery = "UPDATE patients SET city='$_POST[suggestivecity]' WHERE id='$_POST[id]'";
-    $conn->query($UpdateQuery);
-  };
+    if($_POST[test] == "other")
+    {
+      $UpdateQuery = "UPDATE patients SET city='$_POST[suggestivecity]' WHERE id='$_POST[id]'";
+      $conn->query($UpdateQuery);
+    }
+    else
+    {
+      $UpdateQuery = "UPDATE patients SET city='$_POST[test]' WHERE id='$_POST[id]'";
+      $conn->query($UpdateQuery);
+    }
+  }
   // if (isset($_POST['newField']))
   // {
   //   $UpdateQuery = "UPDATE patients SET city='$_POST[suggestivecity]' WHERE id='$_POST[id]'";
@@ -154,6 +168,17 @@ while($row = $resultQuery->fetch_array())
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
   <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="style.css">
+  <script>
+  $('#choice').change(function(){
+        var selected_item = $(this).val()
+
+        if(selected_item == "other"){
+            $('#other').val("").removeClass('hidden');
+        }else{
+            $('#other').val(selected_item).addClass('hidden');
+        }
+    });
+    </script>
 </head>
 
 
