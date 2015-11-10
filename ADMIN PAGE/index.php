@@ -1,22 +1,4 @@
-<!DOCTYPE html>
 <html>
-<body>
-<div class="navigation">
-    <div class="container">
-
-        <div class="navigationLogo">
-  <a href="/">
-      <img src="FEMR LOGO ADMIN PAGE.png" />
-  </a>
-
-</div>
-
-    </div>
-</div>
-<br>
-  </body>
-
-</html>
 <?php
 
 include('connect.php');
@@ -99,8 +81,8 @@ while($row = $resultQuery->fetch_array())
            <td align='left' width="40%"> <?php  echo $row[$i]; ?> </td>
 
            <td align='left'><div class='btn-group'>
-           <form  action='index.php' method='POST'>
-               <input type="hidden" name="id" value="<?php echo $row[$i+1]; ?>">
+           <form>
+               <input type="hidden" name="idUnique" value="<?php echo $row[$i+1]; ?>">
               <select id="choice" class="form-control" name="test">
                    <?php
                    for($k = 0; $k < $maxCount; $k++){
@@ -113,7 +95,7 @@ while($row = $resultQuery->fetch_array())
   <!-- <input type="text" name="suggestivecity" value="Enter city"> -->
 
              </td>
-                <td align='center' width="5%"><button type="submit" name="update" value="update" class="btn btn-success">Update</button>
+                <td align='center' width="5%"><button type="submit" name="update" value="update" id="save" class="btn btn-success">Update</button>
                 <!-- <button type="submit" name="newfield" value="newfield" class="btn btn-success">SuggestNew</button> -->
             </form>
             </div></td>
@@ -127,60 +109,57 @@ while($row = $resultQuery->fetch_array())
 
 
 
-</tbody>
-</table>
-</div>
-</div><?php
+    </tbody>
+    </table>
+    </div>
+    </div>
+</html>
 
-?>
 
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8">
+    <title>fEMR City Cleanse Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script>
+    $('#choice').change(function(){
+          var selected_item = $(this).val()
 
-<?php
-  if (isset($_POST['update']))
-  {
-    if($_POST[test] == "other")
-    {
-      $UpdateQuery = "UPDATE patients SET city='$_POST[suggestivecity]' WHERE id='$_POST[id]'";
-      $conn->query($UpdateQuery);
-    }
-    else
-    {
-      $UpdateQuery = "UPDATE patients SET city='$_POST[test]' WHERE id='$_POST[id]'";
-      $conn->query($UpdateQuery);
-    }
-  }
-  // if (isset($_POST['newField']))
-  // {
-  //   $UpdateQuery = "UPDATE patients SET city='$_POST[suggestivecity]' WHERE id='$_POST[id]'";
-  //   $conn->query($UpdateQuery);
-  // };
-?>
-
-<head>
-  <meta charset="utf-8">
-  <title>fEMR City Cleanse Generator</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <link href="css/bootstrap.css" rel="stylesheet">
-  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-  <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="style.css">
-  <script>
-  $('#choice').change(function(){
-        var selected_item = $(this).val()
-
-        if(selected_item == "other"){
-            $('#other').val("").removeClass('hidden');
-        }else{
-            $('#other').val(selected_item).addClass('hidden');
-        }
-    });
-    </script>
-</head>
-
-
-
-  </html>
+          if(selected_item == "other"){
+              $('#other').val("").removeClass('hidden');
+          }else{
+              $('#other').val(selected_item).addClass('hidden');
+          }
+      });
+      </script>
+      <script type="text/javascript">
+      $(function(){
+        $('#save').click(function(){
+          var test= $('#test').val();
+          var id= $('#idUnique').val();
+          $.ajax({
+                  url   : "ajax.php",
+                  type  : "POST",
+                  async : false,
+                  data  : {
+                          'buttonsave'  : 1,
+                          'test' : test,
+                          'idUnique'   : id
+                          },
+                  success:function(result)
+                  {
+                    alert(result);
+                  }
+              });
+          });
+      })
+      </script>
+  </head>
+</html>
