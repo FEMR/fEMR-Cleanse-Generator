@@ -1,9 +1,55 @@
 <html>
+<head>
+    <meta charset="utf-8">
+    <title>fEMR City Cleanse Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        $('#choice').change(function(){
+            var selected_item = $(this).val()
+
+            if(selected_item == "other"){
+                $('#other').val("").removeClass('hidden');
+            }else{
+                $('#other').val(selected_item).addClass('hidden');
+            }
+        });
+    </script>
+    <script type="text/javascript">
+        $(function(){
+            $('#save').click(function(){
+                var test= $('#test').val();
+                var id= $('#idUnique').val();
+                $.ajax({
+                    url   : "ajax.php",
+                    type  : "POST",
+                    async : false,
+                    data  : {
+                        'buttonsave'  : 1,
+                        'test' : test,
+                        'idUnique'   : id
+                    },
+                    success:function(result)
+                    {
+                        alert(result);
+                    }
+                });
+            });
+        })
+    </script>
+</head>
 <?php
 
 ini_set( 'max_execution_time', 0);
 
 include('connect.php');
+
+include('function.php');
 
 $conn = new mysqli($hostname, $username, $password, $database);
 
@@ -11,12 +57,12 @@ if($conn->connect_error){
     die("Connection failed: " . $conn->connect_error);
 }
 
-$limit = 500;
+$limit = 50;
 
 //Grab the count of the number of cities PATIENTS
 //SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM mission_cities)
 //SELECT city, id FROM femr.patients LIMIT 5
-$patientCities = "SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM mission_cities) LIMIT $limit";
+$patientCities = "SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM mission_cities WHERE mission_country_id = 72 ) LIMIT $limit";
 
 // LIMIT 250,
 
@@ -161,53 +207,4 @@ while($row = $resultQuery->fetch_assoc()) {
     </table>
     </div>
     </div>
-</html>
-
-
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>fEMR City Cleanse Generator</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link href="css/bootstrap.css" rel="stylesheet">
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-    <script>
-    $('#choice').change(function(){
-          var selected_item = $(this).val()
-
-          if(selected_item == "other"){
-              $('#other').val("").removeClass('hidden');
-          }else{
-              $('#other').val(selected_item).addClass('hidden');
-          }
-      });
-      </script>
-      <script type="text/javascript">
-      $(function(){
-        $('#save').click(function(){
-          var test= $('#test').val();
-          var id= $('#idUnique').val();
-          $.ajax({
-                  url   : "ajax.php",
-                  type  : "POST",
-                  async : false,
-                  data  : {
-                          'buttonsave'  : 1,
-                          'test' : test,
-                          'idUnique'   : id
-                          },
-                  success:function(result)
-                  {
-                    alert(result);
-                  }
-              });
-          });
-      })
-      </script>
-  </head>
 </html>
