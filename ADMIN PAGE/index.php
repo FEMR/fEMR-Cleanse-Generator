@@ -1,6 +1,8 @@
 <html>
 <?php
 
+ini_set( 'max_execution_time', 0);
+
 include('connect.php');
 
 $conn = new mysqli($hostname, $username, $password, $database);
@@ -9,16 +11,20 @@ if($conn->connect_error){
     die("Connection failed: " . $conn->connect_error);
 }
 
+$limit = 500;
+
 //Grab the count of the number of cities PATIENTS
 //SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM mission_cities)
 //SELECT city, id FROM femr.patients LIMIT 5
-$patientCities = "SELECT city, id FROM femr.patients WHERE city NOT IN(SELECT name FROM mission_cities) LIMIT 5";
+$patientCities = "SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM mission_cities) LIMIT $limit";
+
+// LIMIT 250,
 
 $resultQuery = $conn->query($patientCities);
 $countQuery = mysqli_field_count($conn);
 // while($row = $resultQuery->fetch_array()){
-    // for($i = 0; $i < $countQuery;$i++)
-        // echo $row[$i];
+    // for("name" = 0; "name" < $countQuery;"name"++)
+        // echo $row["name"];
 // }
 
 //Grabbing the count of the cities DICTIONARY
@@ -47,42 +53,84 @@ $countQuery2 = mysqli_field_count($conn);
 
          <?php
 $shortest = -1;
-while($row = $resultQuery->fetch_array())
-{
-	for($i = 0; $i < $countQuery - 1; $i++)
-	{
+while($row = $resultQuery->fetch_assoc()) {
+
+     if( $row['city'] == 'unknown' ) continue;
+
+//    echo '<pre>';
+//    var_dump($resultQuery->fetch_assoc());
+//     echo '</pre>';
+//     die();
+    //$dictionary = $resultQuery2->fetch_array();
+
+//	for("name" = 0; "name" < $countQuery - 1; "name"++)
+//	{
     $levField = array();
     $cityField = array();
-		while($row2 = $resultQuery2->fetch_array())
-		{
-			for($j = 0; $j < $countQuery2; $j++)
-			{
-				$lev = levenshtein ($row[$i], $row2[$j]);
+
+    while ($dictionary = $resultQuery2->fetch_assoc()) {
+
+//    echo '<pre>';
+//    var_dump($resultQuery2->fetch_assoc());
+//     echo '</pre>';
+//     die();
+//            $page = 0;
+//			for($j = 0; $j < $countQuery2; $j++)
+//			{
+
+//                    echo '<pre>';
+//                    var_dump($row);
+//                    var_dump($dictionary);
+//                     echo '</pre>';
+//                     die();
+
+//                $page++;
+//                $sql = "SELECT name FROM femr.mission_cities
+//                        WHERE name LIKE {$row["name"][0]}'%'
+//                        LIMIT $page, 1";
+
+        $lev = levenshtein($row['city'], $dictionary['name']);
 
 
         // if not exact match, check to see if it's the shortest so far
         if ($lev < "3") {
+
+//                    echo '<pre>';
+//                    var_dump($dictionary["name"]);
+//                    echo '</pre>';
+//                    die();
+
             // set the closest match, and shortest distance
             array_push($levField, $lev);
-            array_push($cityField, $row2[$j]);
+            array_push($cityField, $dictionary["name"]);
         }
-			}
-		}
-		$resultQuery2->data_seek(0);
+
+
+//			}
+    }
+    // reset dictionary back to beginning
+    $resultQuery2->data_seek(0);
+
 
     if(count($levField) > "5")
       $maxCount = 5;
     else
       $maxCount = count($levField);
     array_multisort($levField, $cityField);
-  if(count($levField) != "0"): ?>
+
+  if(count($levField) != "0"):
+
+//         var_dump($row);
+//         die();
+
+         ?>
 
          <tr>
-           <td align='left' width="40%"> <?php  echo $row[$i]; ?> </td>
+           <td align='left' width="40%"> <?php  echo $row["city"]; ?> </td>
 
            <td align='left'><div class='btn-group'>
            <form>
-               <input type="hidden" name="idUnique" value="<?php echo $row[$i+1]; ?>">
+               <input type="hidden" name="idUnique" value="<?php echo $row["city"]; ?>">
               <select id="choice" class="form-control" name="test">
                    <?php
                    for($k = 0; $k < $maxCount; $k++){
@@ -102,7 +150,7 @@ while($row = $resultQuery->fetch_array())
          </tr>
    <? endif;
     $shortest = -1;
-	}
+//	}
 }?>
 
 
