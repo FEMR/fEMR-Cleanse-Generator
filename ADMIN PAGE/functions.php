@@ -1,23 +1,17 @@
 <?php
 ini_set( 'max_execution_time', 0);
 
-include('connect.php');
+include_once('connect.php');
 
+function get_levenshtein_values($input, $conn){
 
-
-function get_levenshtein_values($input){
-  $conn = new mysqli($hostname, $username, $password, $database);
-
-  if($conn->connect_error){
-      die("Connection failed: " . $conn->connect_error);
-  }
     $results = [];
 
     $row["name"] = $input;
     $row["suggestions"] = array();
     $row["value"] = array();
     $row["maxCount"] = array();
-    echo '<pre>';
+    $results[] = $row;
     //This outputs the suggestive name
 
 // echo $input[0];
@@ -62,16 +56,10 @@ function get_levenshtein_values($input){
 
   //  Grab Cities Dictionary
 
-    $cityDictionary = "SELECT name FROM femr.mission_cities WHERE name";
-    // echo $cityDictionary;
-  //  $resultQuery2 = $conn->query($cityDictionary);
-    var_dump($conn->query($cityDictionary));
-$dictionary = $resultQuery2->fetch_assoc();
-    echo '<pre>';
-    //This outputs the suggestive name
-    var_dump($dictionary);
-     echo '</pre>';
-     die();
+    $cityDictionary = "SELECT name FROM femr.mission_cities WHERE name LIKE '$input[0]%'";
+
+  $resultQuery2 = $conn->query($cityDictionary);
+
   $levField = array();
   $cityField = array();
 
@@ -80,21 +68,19 @@ $dictionary = $resultQuery2->fetch_assoc();
     //Lev to compare city to dictionary
     $lev = levenshtein($input, $dictionary['name']);
     if($lev < "3"){
-      array_push($results[0]["suggestions"], $lev);
-      array_push($results[0]["value"], $dictionary["name"]);
+      array_push($results[0]["value"], $lev);
+      array_push($results[0]["suggestions"], $dictionary["name"]);
     }
-    echo "blah";
   }
 
 
   if(count($results[0]["value"]) > "5")
-    $maxCount = 5;
+    array_push($results[0]["maxCount"], 5);
   else
-    $maxCount = count($results[0]["value"]);
+      array_push($results[0]["maxCount"], count($results[0]["value"]));
 
-  array_multisort($results[0]["value"], $results[0]["suggestions"]);
+      array_multisort($results[0]["value"], $results[0]["suggestions"]);
 
-//
 
     return $results;
 }

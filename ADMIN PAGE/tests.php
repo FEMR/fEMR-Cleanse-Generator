@@ -26,56 +26,57 @@ if($conn->connect_error){
     <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <script>
-        $('#choice').change(function(){
-            var selected_item = $(this).val()
-
-            if(selected_item == "other"){
-                $('#other').val("").removeClass('hidden');
-            }else{
-                $('#other').val(selected_item).addClass('hidden');
-            }
-        });
+    $(document).ready(function(){
+      $('#choice').change(function() {
+          $('.hideShowTr').css('display','none');
+          $('input#' + $(this).val()).css('display','block');
+      });
+        // $('#choice').change(function(){
+        //     var selected_item = $(this).val()
+        //
+        //     if(selected_item == "other"){
+        //         $('#other').val("").removeClass('hidden');
+        //     }else{
+        //         $('#other').val(selected_item).addClass('hidden');
+        //     }
+        // });
+      });
     </script>
     <script type="text/javascript">
-        $(function(){
-            $('#save').click(function(){
-                var test= $('#test').val();
-                var id= $('#idUnique').val();
+            function updatedata(str){
+              var citySelected = $('#citySelected'+str).val();
+              var uniqueID = str;
+
                 $.ajax({
                     url   : "ajax.php",
                     type  : "POST",
                     async : false,
                     data  : {
                         'buttonsave'  : 1,
-                        'test' : test,
-                        'idUnique'   : id
+                        citySelected : citySelected,
+                        uniqueID : uniqueID
                     },
                     success:function(result)
                     {
                         alert(result);
                     }
                 });
-            });
-        })
+        }
     </script>
 </head>
 <?php
 
-$limit = 50;
+$limit = 100;
+//SELECT * FROM `patients` LIMIT 1250, 1350
 
 //Grab the count of the number of cities PATIENTS
 //SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM mission_cities)
 //SELECT city, id FROM femr.patients LIMIT 5
 //SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM mission_cities WHERE mission_country_id = 72 ) LIMIT $limit
-$patientCities = "SELECT city, id FROM femr.patients LIMIT 5";
-
+$patientCities = "SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM femr.mission_cities) LIMIT $limit";
 // LIMIT 250,
 
 $resultQuery = $conn->query($patientCities);
-echo '<pre>';
-var_dump($resultQuery);
-   echo '</pre>';
-echo($resultQuery);
 $countQuery = mysqli_field_count($conn);
 // // while($row = $resultQuery->fetch_array()){
 //     // for("name" = 0; "name" < $countQuery;"name"++)
@@ -90,15 +91,7 @@ $countQuery = mysqli_field_count($conn);
 //     // for($j = 0; $j < $countQuery2;$j++)
 //         // echo $row[$j];
 // // }
-$row = $resultQuery->fetch_assoc();
 
-$results = get_levenshtein_values($row["city"]);
-
-echo '<pre>';
-//This outputs the suggestive name
-var_dump($results);
- echo '</pre>';
- die();
 ?>  <div class="jumbotron"> <div class='container'>
 <center><img align="middle" src="images/femrLogo.png"></center>
 <center><h1> City Cleanse Results </h1></center>
@@ -115,38 +108,47 @@ var_dump($results);
    </tr>
          </thead>
 
-         <?php
+<?php
 
 while($row = $resultQuery->fetch_assoc()) {
-	$results = get_levenshtein_values($row["city"]);
-  echo '<pre>';
-  //This outputs the suggestive name
-  var_dump($results);
-   echo '</pre>';
-   die();
-
+	$results = get_levenshtein_values($row["city"], $conn);
+  $cities = $results[0]["suggestions"];
+  //
+  // echo '<pre>';
+  // var_dump($cities[0]);
+  // echo '</pre>';
+  // die();
+   $maxCount = $results[0]["maxCount"][0];
 	//If results empty don't populate table
-	if($results[0]["maxCount"] != "0"):
+	if($maxCount != "0"):
 		?>
 	         <tr>
 						 <!-- THe associated city -->
 	           <td align='left' width="40%"> <?php  echo $row["city"]; ?> </td>
-	           <td align='left'><div class='btn-group'>
-	           <form>
+
+	           <form action="javascript:updatedata('<?php echo $row["id"]; ?>')">
+               <td align='left'><div class='btn-group'>
 							 				<!-- The associated row ID -->
-	               <input type="hidden" name="idUnique" value="<?php echo $row["id"]; ?>">
-	              <select id="choice" class="form-control" name="test">
-	                   <?php
-	                   for($k = 0; $k < $maxCount; $k++){
-	                    ?>
+	               <input id="uniqueID" type="hidden" value="<?php echo $row["id"]; ?>">
+
+	              <select class="form-control" id="citySelected<?php echo $row["id"]; ?>">
+	                  <?php
+	                   for($k = 0; $k < $maxCount; $k++)
+                     {
+	                  ?>
 											<!-- Displaying the Cities that are suggested -->
-													<option value="<?php echo $results[0]["suggestions"][$k]; ?>"><?php echo $results[0]["suggestions"][$k]; ?></option>
-	                  <?php }?>
-	                   			<option value="other">Other</option>
-									</select>
-									<input type='text' id="other" class="hidden form-control" name="suggestivecity" value="other2">
-	             </td>
-	                <td align='center' width="5%"><button type="submit" name="update" value="update" id="save" class="btn btn-success">Update</button> </td>
+													<option value="<?php echo $cities[$k]; ?>"><?php echo $cities[$k]; ?></option>
+  	                <?php
+                      }
+                    ?>
+	                   			<option value="Other">Other</option>
+								</select>
+									<!-- <input type='text' id="other" class="hidden form-control" name="suggestivecity" value="other2"> -->
+                  <input type='text' id="<?php echo $row["id"]; ?>" class="form-control" name="suggestivecity" placeholder="Enter City">
+
+               </td>
+               <!-- <a class="btn btn-warning btn-sm" href="<?echo $row['id']; ?>')"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a> onclick="updatedata('<?php echo $row['id']; ?>')"-->
+                    <td><button type="button" onclick="updatedata('<?php echo $row["id"]; ?>')" class="btn btn-success">Update</button> </td>
 	                <!-- <button type="submit" name="newfield" value="newfield" class="btn btn-success">SuggestNew</button> -->
 	            </form>
 	            </div></td>
