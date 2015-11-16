@@ -44,9 +44,9 @@ if($conn->connect_error){
     </script>
     <script type="text/javascript">
             function updatedata(str){
-              var citySelected = $('#citySelected'+str).val();
               var uniqueID = str;
-
+              var citySelected = $('#citySelected'+str).val();
+              var other = $('#other'+str).val();
                 $.ajax({
                     url   : "ajax.php",
                     type  : "POST",
@@ -54,7 +54,8 @@ if($conn->connect_error){
                     data  : {
                         'buttonsave'  : 1,
                         citySelected : citySelected,
-                        uniqueID : uniqueID
+                        uniqueID : uniqueID,
+                        other : other
                     },
                     success:function(result)
                     {
@@ -68,12 +69,24 @@ if($conn->connect_error){
 
 $limit = 100;
 //SELECT * FROM `patients` LIMIT 1250, 1350
+$per_page = 100;
+$pages_query= $conn->query("SELECT COUNT('id') FROM femr.patients");
+
+$row = $pages_query->fetch_assoc();
+$row["COUNT('id')"]; //The count!~
+
+$pages = ceil($row["COUNT('id')"] / $per_page);
+
+$page = (isset($_GET['page'])) ? (int) $_GET['page'] : 1;
+
+$start = ($page - 1) * $per_page;
 
 //Grab the count of the number of cities PATIENTS
 //SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM mission_cities)
 //SELECT city, id FROM femr.patients LIMIT 5
 //SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM mission_cities WHERE mission_country_id = 72 ) LIMIT $limit
-$patientCities = "SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM femr.mission_cities) LIMIT $limit";
+// $patientCities = "SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM femr.mission_cities) LIMIT $limit";
+$patientCities = "SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM femr.mission_cities) LIMIT $start, $per_page";
 // LIMIT 250,
 
 $resultQuery = $conn->query($patientCities);
@@ -144,7 +157,7 @@ while($row = $resultQuery->fetch_assoc()) {
 	                   			<option value="Other">Other</option>
 								</select>
 									<!-- <input type='text' id="other" class="hidden form-control" name="suggestivecity" value="other2"> -->
-                  <input type='text' id="<?php echo $row["id"]; ?>" class="form-control" name="suggestivecity" placeholder="Enter City">
+                  <input type='text' id="other<?php echo $row["id"]; ?>" class="form-control" placeholder="Enter City">
 
                </td>
                <!-- <a class="btn btn-warning btn-sm" href="<?echo $row['id']; ?>')"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a> onclick="updatedata('<?php echo $row['id']; ?>')"-->
@@ -158,6 +171,25 @@ while($row = $resultQuery->fetch_assoc()) {
 ?>
     </tbody>
     </table>
-    </div>
-    </div>
+
+  <?php
+  $prev = $page -1;
+  $next = $page +1;
+  echo "<ul class='pagination'>";
+  if(!($page<=1)){
+    echo "<li><a href='tests.php?page=$prev'>Prev</a></li>";
+  }
+
+  if($pages>=1 && $page<=$pages){
+    for($x=1;$x<=$pages;$x++){
+      echo ($x == $page) ? '<li><strong><a href="?page='.$x.'">'.$x.'</a></strong></li>':'<li><a href="?page='.$x.'">'.$x.'</a></li>';
+    }
+  }
+
+  if(!($page>=$pages)){
+    echo "<li><a href='tests.php?page=$next'>Next</a></li>";
+  }
+  echo "</ul>";
+  ?>
+  </div>
 </html>
