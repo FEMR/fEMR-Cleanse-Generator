@@ -1,3 +1,19 @@
+<?php
+
+ini_set( 'max_execution_time', 0);
+
+include('connect.php');
+include('function.php');
+
+$conn = new mysqli($hostname, $username, $password, $database);
+
+if($conn->connect_error){
+    die("Connection failed: " . $conn->connect_error);
+}
+
+?>
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -45,18 +61,6 @@
 </head>
 <?php
 
-ini_set( 'max_execution_time', 0);
-
-include('connect.php');
-
-include('function.php');
-
-$conn = new mysqli($hostname, $username, $password, $database);
-
-if($conn->connect_error){
-    die("Connection failed: " . $conn->connect_error);
-}
-
 $limit = 50;
 
 //Grab the count of the number of cities PATIENTS
@@ -82,7 +86,7 @@ $countQuery2 = mysqli_field_count($conn);
         // echo $row[$j];
 // }
 ?>  <div class="jumbotron"> <div class='container'>
-<center><img align="middle" src="images/femrLogo.png"></img></center>
+<center><img align="middle" src="images/femrLogo.png"></center>
 <center><h1> City Cleanse Results </h1></center>
  <center><div class='row col-md-6 col-md-offset-2 custyle'></center>
 
