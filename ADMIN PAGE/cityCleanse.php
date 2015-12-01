@@ -25,23 +25,6 @@ if($conn->connect_error){
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="style.css">
-    <script>
-    $(document).ready(function(){
-      $('#choice').change(function() {
-          $('.hideShowTr').css('display','none');
-          $('input#' + $(this).val()).css('display','block');
-      });
-        // $('#choice').change(function(){
-        //     var selected_item = $(this).val()
-        //
-        //     if(selected_item == "other"){
-        //         $('#other').val("").removeClass('hidden');
-        //     }else{
-        //         $('#other').val(selected_item).addClass('hidden');
-        //     }
-        // });
-      });
-    </script>
     <script type="text/javascript">
             function updatedata(str){
               var uniqueID = str;
@@ -59,7 +42,7 @@ if($conn->connect_error){
                     },
                     success:function(result)
                     {
-                        alert(result);
+                        $('#div'+str).val("").removeClass('hidden');
                     }
                 });
         }
@@ -67,13 +50,11 @@ if($conn->connect_error){
 </head>
 <?php
 
-$limit = 100;
-//SELECT * FROM `patients` LIMIT 1250, 1350
-$per_page = 100;
+$per_page = 50;
+
 $pages_query= $conn->query("SELECT COUNT('id') FROM femr.patients");
 
 $row = $pages_query->fetch_assoc();
-$row["COUNT('id')"]; //The count!~
 
 $pages = ceil($row["COUNT('id')"] / $per_page);
 
@@ -81,29 +62,11 @@ $page = (isset($_GET['page'])) ? (int) $_GET['page'] : 1;
 
 $start = ($page - 1) * $per_page;
 
-//Grab the count of the number of cities PATIENTS
-//SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM mission_cities)
-//SELECT city, id FROM femr.patients LIMIT 5
-//SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM mission_cities WHERE mission_country_id = 72 ) LIMIT $limit
-// $patientCities = "SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM femr.mission_cities) LIMIT $limit";
 $patientCities = "SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM femr.mission_cities) LIMIT $start, $per_page";
-// LIMIT 250,
+
 
 $resultQuery = $conn->query($patientCities);
 $countQuery = mysqli_field_count($conn);
-// // while($row = $resultQuery->fetch_array()){
-//     // for("name" = 0; "name" < $countQuery;"name"++)
-//         // echo $row["name"];
-// // }
-//
-// //Grabbing the count of the cities DICTIONARY
-// $cityDictionary = "SELECT name FROM femr.mission_cities";
-// $resultQuery2 = $conn->query($cityDictionary);
-// $countQuery2 = mysqli_field_count($conn);
-// // while($row2 = $resultQuery2->fetch_array()){
-//     // for($j = 0; $j < $countQuery2;$j++)
-//         // echo $row[$j];
-// // }
 
 ?>  <div class="jumbotron"> <div class='container'>
 <center><img align="middle" src="images/femrLogo.png"></center>
@@ -122,17 +85,13 @@ $countQuery = mysqli_field_count($conn);
          </thead>
 
 <?php
-
+$isResults = 0;
 while($row = $resultQuery->fetch_assoc()) {
 	$results = get_levenshtein_values($row["city"], $conn);
   $cities = $results[0]["suggestions"];
-  //
-  // echo '<pre>';
-  // var_dump($cities[0]);
-  // echo '</pre>';
-  // die();
-   $maxCount = $results[0]["maxCount"][0];
-	//If results empty don't populate table
+
+  $maxCount = $results[0]["maxCount"][0];
+
 	if($maxCount != "0"):
 		?>
 	         <tr>
@@ -161,33 +120,42 @@ while($row = $resultQuery->fetch_assoc()) {
 
                </td>
                <!-- <a class="btn btn-warning btn-sm" href="<?echo $row['id']; ?>')"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a> onclick="updatedata('<?php echo $row['id']; ?>')"-->
-                    <td><button type="button" onclick="updatedata('<?php echo $row["id"]; ?>')" class="btn btn-success">Update</button> </td>
+                    <td><button type="button" onclick="updatedata('<?php echo $row["id"]; ?>')" class="btn btn-success">Update</button>
+                      <!-- Add success or failure -->
+                        <div class="hidden" id="div<?php echo$row["id"];?>">Success Worked</div>
+                     </td>
 	                <!-- <button type="submit" name="newfield" value="newfield" class="btn btn-success">SuggestNew</button> -->
 	            </form>
 	            </div></td>
 	         </tr>
-	   <? endif;
+	   <?
+    endif;
+    $isResults = 1;
 }
+if($isResults == 0);
+  echo "No results";
 ?>
     </tbody>
     </table>
 
   <?php
+  // Pagination
   $prev = $page -1;
   $next = $page +1;
   echo "<ul class='pagination'>";
+  //Page 1
   if(!($page<=1)){
-    echo "<li><a href='tests.php?page=$prev'>Prev</a></li>";
+    echo "<li><a href='cityCleanse.php?page=$prev'>Prev</a></li>";
   }
-
+//Loop through make additional pages
   if($pages>=1 && $page<=$pages){
     for($x=1;$x<=$pages;$x++){
       echo ($x == $page) ? '<li><strong><a href="?page='.$x.'">'.$x.'</a></strong></li>':'<li><a href="?page='.$x.'">'.$x.'</a></li>';
     }
   }
-
+//Max Page
   if(!($page>=$pages)){
-    echo "<li><a href='tests.php?page=$next'>Next</a></li>";
+    echo "<li><a href='cityCleanse.php?page=$next'>Next</a></li>";
   }
   echo "</ul>";
   ?>

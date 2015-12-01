@@ -60,8 +60,6 @@ function get_levenshtein_values($input, $conn){
 
   $resultQuery2 = $conn->query($cityDictionary);
 
-  $levField = array();
-  $cityField = array();
 
   //Parse through entire dictionary
   while($dictionary = $resultQuery2->fetch_assoc()){
@@ -80,7 +78,6 @@ function get_levenshtein_values($input, $conn){
       array_push($results[0]["maxCount"], count($results[0]["value"]));
 
       array_multisort($results[0]["value"], $results[0]["suggestions"]);
-
 
     return $results;
 }
