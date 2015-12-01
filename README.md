@@ -13,7 +13,8 @@ The Cleanse Generator is an intuitive way of cleaning up mispellings and errors 
 A simple and fast EMR system.
 
 ####Community
-1. [JIRA](https://teamfemr.atlassian.net)
-2. We collaborate on Slack - contact ken.dunlap@teamfemr.org for an invite!
+1. [Mailing List](https://groups.google.com/forum/#!forum/team-femr)
+2. [JIRA](https://teamfemr.atlassian.net)
+3. We collaborate on Slack - contact ken.dunlap@teamfemr.org for an invite!
 
 
