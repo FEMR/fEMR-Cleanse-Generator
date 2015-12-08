@@ -68,7 +68,13 @@ $patientCities = "SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT n
 $resultQuery = $conn->query($patientCities);
 $countQuery = mysqli_field_count($conn);
 
-?>  <div class="jumbotron"> <div class='container'>
+?>   <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand left" href="adminpage.html">fEMR</a>
+          </div>
+        </div>
+  </nav> <div class="jumbotron"> <div class='container'>
 <center><img align="middle" src="images/femrLogo.png"></center>
 <center><h1> City Cleanse Results </h1></center>
  <center><div class='row col-md-6 col-md-offset-2 custyle'></center>
@@ -103,7 +109,7 @@ while($row = $resultQuery->fetch_assoc()) {
 							 				<!-- The associated row ID -->
 	               <input id="uniqueID" type="hidden" value="<?php echo $row["id"]; ?>">
 
-	              <select class="form-control" id="citySelected<?php echo $row["id"]; ?>">
+	              <select size="<?php echo $maxCount; ?>" class="form-control" id="citySelected<?php echo $row["id"]; ?>">
 	                  <?php
 	                   for($k = 0; $k < $maxCount; $k++)
                      {
@@ -129,12 +135,18 @@ while($row = $resultQuery->fetch_assoc()) {
 	            </div></td>
 	         </tr>
 	   <?
+	   $isResults = 1;
     endif;
-    $isResults = 1;
+    
 }
-if($isResults == 0);
-  echo "No results";
-?>
+	if($isResults == 0):
+	?>
+	<div class="container">
+	<p class="bg-danger"><h1 class="bg-danger">No Results<h1></p>
+	</div>
+	<?
+	endif;
+	?>
     </tbody>
     </table>
 
@@ -142,7 +154,7 @@ if($isResults == 0);
   // Pagination
   $prev = $page -1;
   $next = $page +1;
-  echo "<ul class='pagination'>";
+  echo "<ul class='pagination pagination-lg'>";
   //Page 1
   if(!($page<=1)){
     echo "<li><a href='cityCleanse.php?page=$prev'>Prev</a></li>";

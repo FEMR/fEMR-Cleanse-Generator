@@ -10,24 +10,23 @@ $conn = new mysqli($hostname, $username, $password, $database);
 
 if (isset($_POST['buttonsave']))
 {
+	//Prevent SQL Injections
+	$stmt = $conn->stmt_init();
+	$stmt->prepare('UPDATE patients SET city=? where id=?');
+	
   if($city != "Other")
-    $UpdateQuery = "UPDATE patients SET city='$city' WHERE id='$id'";
+	$stmt->bind_param("ss", $city, $id);
   else
-    $UpdateQuery = "UPDATE patients SET city='$other' WHERE id='$id'";
-    //Add for sql injections
-    // $stmt = $dbConnection->prepare('SELECT * FROM employees WHERE name = ?');
-    // $stmt->bind_param('s', $name);
-    // 
-    // $stmt->execute();
-    //
-    // $result = $stmt->get_result();
-    // while ($row = $result->fetch_assoc()) {
-    //     // do something with $row
-    // }
-   $result = $conn->query($UpdateQuery);
+    $stmt->bind_param("ss", $other, $id);
+    
+    $result = $stmt->execute();
+    
     if($result)
     {
       echo "Successful Update";
     }
+	else{
+		echo "Update Failed";
+	}
 }
 ?>
