@@ -1,4 +1,4 @@
-INSERT INTO femr.citytest2 VALUES ('Abarat','88'),
+INSERT INTO cities_dictionary.cities (`name`, `mission_country_id`) VALUES ('Abarat','88'),
 ('Abarati','88'),
 ('Abarot','88'),
 ('Achivwa','88'),

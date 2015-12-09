@@ -1,4 +1,4 @@
-INSERT INTO femr.citytest2 VALUES ('10 de Agosto','51'),
+INSERT INTO cities_dictionary.cities (`name`, `mission_country_id`) VALUES ('10 de Agosto','51'),
 ('28 de Mayo','51'),
 ('Abanico','51'),
 ('Abañín','51'),

@@ -101,70 +101,69 @@ while($row = $resultQuery->fetch_assoc()) {
 	if($maxCount != "0"):
 		?>
 	         <tr>
-						 <!-- THe associated city -->
-	           <td align='left' width="40%"> <?php  echo $row["city"]; ?> </td>
+				<!-- The associated city -->
+				<td align='left' width="40%"><h1> <?php  echo $row["city"]; ?> </h1></td>
 
-	           <form action="javascript:updatedata('<?php echo $row["id"]; ?>')">
-               <td align='left'><div class='btn-group'>
-							 				<!-- The associated row ID -->
-	               <input id="uniqueID" type="hidden" value="<?php echo $row["id"]; ?>">
+				<form action="javascript:updatedata('<?php echo $row["id"]; ?>')">
+					<td align='left'>
+						<div class='btn-group'>
+						
+						<!-- The associated row ID -->
+						<input id="uniqueID" type="hidden" value="<?php echo $row["id"]; ?>">
 
-	              <select size="<?php echo $maxCount; ?>" class="form-control" id="citySelected<?php echo $row["id"]; ?>">
-	                  <?php
-	                   for($k = 0; $k < $maxCount; $k++)
-                     {
-	                  ?>
-											<!-- Displaying the Cities that are suggested -->
-													<option value="<?php echo $cities[$k]; ?>"><?php echo $cities[$k]; ?></option>
-  	                <?php
-                      }
-                    ?>
-	                   			<option value="Other">Other</option>
-								</select>
-									<!-- <input type='text' id="other" class="hidden form-control" name="suggestivecity" value="other2"> -->
-                  <input type='text' id="other<?php echo $row["id"]; ?>" class="form-control" placeholder="Enter City">
+						<select size="<?php echo $maxCount; ?>" class="form-control" id="citySelected<?php echo $row["id"]; ?>">
+							<?php
+							for($k = 0; $k < $maxCount; $k++)
+							{
+								?>
+								<!-- Displaying the Cities that are suggested -->
+								<option value="<?php echo $cities[$k]; ?>"><?php echo $cities[$k]; ?></option>
+								<?php
+							}
+							 ?>
+							<option value="Other">Other</option>
+						</select>
+						<input type='text' id="other<?php echo $row["id"]; ?>" class="form-control" placeholder="Enter City">
 
-               </td>
-               <!-- <a class="btn btn-warning btn-sm" href="<?echo $row['id']; ?>')"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a> onclick="updatedata('<?php echo $row['id']; ?>')"-->
-                    <td><button type="button" onclick="updatedata('<?php echo $row["id"]; ?>')" class="btn btn-success">Update</button>
-                      <!-- Add success or failure -->
-                        <div class="hidden" id="div<?php echo$row["id"];?>">Success Worked</div>
-                     </td>
-	                <!-- <button type="submit" name="newfield" value="newfield" class="btn btn-success">SuggestNew</button> -->
+					</td>
+						<td align="center">
+						<button type="button" onclick="updatedata('<?php echo $row["id"]; ?>')" class="btn btn-success">Update</button>
+						<!-- Add success or failure -->
+						<div class="hidden" id="div<?php echo$row["id"];?>">Success Worked</div>
+						</div>
+					</td>
 	            </form>
-	            </div></td>
+	            </td>
 	         </tr>
 	   <?
 	   $isResults = 1;
     endif;
-    
 }
-	if($isResults == 0):
-	?>
-	<div class="container">
-	<p class="bg-danger"><h1 class="bg-danger">No Results<h1></p>
-	</div>
-	<?
-	endif;
 	?>
     </tbody>
     </table>
 
-  <?php
+<?php
   // Pagination
   $prev = $page -1;
   $next = $page +1;
+  
   echo "<ul class='pagination pagination-lg'>";
+  
   //Page 1
-  if(!($page<=1)){
+  if(!($page <= 1)){
     echo "<li><a href='cityCleanse.php?page=$prev'>Prev</a></li>";
   }
-//Loop through make additional pages
+  
+  //Loop through make additional pages
   if($pages>=1 && $page<=$pages){
     for($x=1;$x<=$pages;$x++){
-      echo ($x == $page) ? '<li><strong><a href="?page='.$x.'">'.$x.'</a></strong></li>':'<li><a href="?page='.$x.'">'.$x.'</a></li>';
+      echo ($x == $page) ? 
+	  '<li class="active"><a href="?page='.$x.'">'.$x.'</a></li>'
+	  :'<li><a href="?page='.$x.'">'.$x.'</a></li>';
     }
   }
+  
 //Max Page
   if(!($page>=$pages)){
     echo "<li><a href='cityCleanse.php?page=$next'>Next</a></li>";

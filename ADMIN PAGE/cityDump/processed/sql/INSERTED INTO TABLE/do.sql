@@ -1,4 +1,4 @@
-INSERT INTO femr.citytest2 VALUES ('Abadesa','49'),
+INSERT INTO cities_dictionary.cities (`name`, `mission_country_id`) VALUES ('Abadesa','49'),
 ('Abajo','49'),
 ('Abajo Caballero','49'),
 ('Abajo Guaucí','49'),

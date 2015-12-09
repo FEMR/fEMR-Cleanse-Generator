@@ -1,4 +1,4 @@
-INSERT INTO femr.citytest2 VALUES ('Abacou','72')
+INSERT INTO cities_dictionary.cities (`name`, `mission_country_id`) VALUES ('Abacou','72')
 ,('Abeille','72')
 ,('Abicot','72')
 ,('Aboni','72')

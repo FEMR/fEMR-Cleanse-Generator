@@ -1,4 +1,4 @@
-INSERT INTO femr.citytest2 VALUES ('Aajpur','76'),
+INSERT INTO cities_dictionary.cities (`name`, `mission_country_id`) VALUES ('Aajpur','76'),
 ('Abad','76'),
 ('Abadgarh','76'),
 ('Abadi Rajgir','76'),
