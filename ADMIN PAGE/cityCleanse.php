@@ -26,6 +26,23 @@ if($conn->connect_error){
     <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <script type="text/javascript">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+//function updatedata(str){
+
+  // $("a").click(function(){
+    // $(this).after("<img src='images/page-loader.gif' alt='loading' />").fadeIn();  
+      //return false;  // comment out this to for the link to work
+  // });
+
+   $(function() {
+       $('a').click(function() {
+           $('#loading').show();
+           //return false;
+       });        
+   });
+
+
             function updatedata(str){
               var uniqueID = str;
               var citySelected = $('#citySelected'+str).val();
@@ -40,17 +57,20 @@ if($conn->connect_error){
                         uniqueID : uniqueID,
                         other : other
                     },
-                    success:function(result)
+                    success:function()
                     {
-                        $('#div'+str).val("").removeClass('hidden');
+                        $('#success'+str).val("").removeClass('hidden');
                     }
                 });
         }
     </script>
 </head>
+
+<body>
+
 <?php
 
-$per_page = 50;
+$per_page = 20;
 
 $pages_query= $conn->query("SELECT COUNT('id') FROM femr.patients");
 
@@ -62,7 +82,7 @@ $page = (isset($_GET['page'])) ? (int) $_GET['page'] : 1;
 
 $start = ($page - 1) * $per_page;
 
-$patientCities = "SELECT city, id FROM femr.patients WHERE city NOT IN (SELECT name FROM femr.mission_cities) LIMIT $start, $per_page";
+$patientCities = "SELECT city, id FROM femr.patients WHERE city != \"unknown\" && city NOT IN (SELECT name FROM femr.mission_cities) LIMIT $start, $per_page";
 
 
 $resultQuery = $conn->query($patientCities);
@@ -70,6 +90,7 @@ $countQuery = mysqli_field_count($conn);
 
 ?>   <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
+		
           <div class="navbar-header">
             <a class="navbar-brand left" href="adminpage.html">fEMR</a>
           </div>
@@ -129,7 +150,8 @@ while($row = $resultQuery->fetch_assoc()) {
 						<td align="center">
 						<button type="button" onclick="updatedata('<?php echo $row["id"]; ?>')" class="btn btn-success">Update</button>
 						<!-- Add success or failure -->
-						<div class="hidden" id="div<?php echo$row["id"];?>">Success Worked</div>
+						<div class="hidden" id="success<?php echo$row["id"];?>">Successful Update</div>
+					
 						</div>
 					</td>
 	            </form>
@@ -142,6 +164,11 @@ while($row = $resultQuery->fetch_assoc()) {
 	?>
     </tbody>
     </table>
+</body>
+
+<div class="row text-center" id="loading" style="display: none;">
+  <img class="center-block" id="loading-image" src="images/page-loader.gif" alt="Loading..." />
+</div>
 
 <?php
   // Pagination

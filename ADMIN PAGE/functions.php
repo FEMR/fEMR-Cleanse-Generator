@@ -27,13 +27,10 @@ function get_levenshtein_values($input, $conn){
 		  array_push($results[0]["suggestions"], $dictionary["name"]);
 		}
 	}
-
-
 	
 	array_multisort($results[0]["value"], $results[0]["suggestions"]);
 
-	$results[0]["suggestions"] = array_unique($results[0]["suggestions"]);
-	
+
 	if(count($results[0]["suggestions"]) > "5")
 		array_push($results[0]["maxCount"], 5);
 	else
