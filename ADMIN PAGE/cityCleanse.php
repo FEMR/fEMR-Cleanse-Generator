@@ -28,13 +28,6 @@ if($conn->connect_error){
     <script type="text/javascript">
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript">
-//function updatedata(str){
-
-  // $("a").click(function(){
-    // $(this).after("<img src='images/page-loader.gif' alt='loading' />").fadeIn();  
-      //return false;  // comment out this to for the link to work
-  // });
-
    $(function() {
        $('a').click(function() {
            $('#loading').show();
@@ -82,7 +75,7 @@ $page = (isset($_GET['page'])) ? (int) $_GET['page'] : 1;
 
 $start = ($page - 1) * $per_page;
 
-$patientCities = "SELECT city, id FROM femr.patients WHERE city != \"unknown\" && city NOT IN (SELECT name FROM femr.mission_cities) LIMIT $start, $per_page";
+$patientCities = "SELECT city, id FROM femr.patients WHERE city != \"unknown\" && city NOT IN (SELECT name FROM cities_dictionary.mission_cities) LIMIT $start, $per_page";
 
 
 $resultQuery = $conn->query($patientCities);

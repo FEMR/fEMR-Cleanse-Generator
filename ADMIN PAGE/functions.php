@@ -14,7 +14,7 @@ function get_levenshtein_values($input, $conn){
     $results[] = $row;
   
 	//  Grab Cities Dictionary
-    $cityDictionary = "SELECT name FROM femr.mission_cities WHERE name LIKE '$input[0]%'";
+    $cityDictionary = "SELECT name FROM cities_dictionary.mission_cities WHERE name LIKE '$input[0]%'";
 	$resultQuery2 = $conn->query($cityDictionary);
 
 
