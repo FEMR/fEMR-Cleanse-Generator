@@ -27,7 +27,8 @@ USE cities_dictionary;
 CREATE TABLE IF NOT EXISTS `mission_cities` (
 `id` int(10) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `mission_country_id` int(10) NOT NULL
+  `mission_country_id` int(10) NOT NULL,
+  primary key (id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=89140 ;
 
 --
@@ -87679,16 +87680,6 @@ INSERT INTO `mission_cities` (`id`, `name`, `mission_country_id`) VALUES
 --
 
 --
--- Indexes for table `mission_cities`
---
-ALTER TABLE `mission_cities`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `id_UNIQUE` (`id`), ADD KEY `fk_mission_cities_1_idx` (`mission_country_id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
 -- AUTO_INCREMENT for table `mission_cities`
 --
 ALTER TABLE `mission_cities`
@@ -87696,12 +87687,6 @@ MODIFY `id` int(10) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=89140;
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `mission_cities`
---
-ALTER TABLE `mission_cities`
-ADD CONSTRAINT `fk_mission_cities_1` FOREIGN KEY (`mission_country_id`) REFERENCES `mission_countries` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
