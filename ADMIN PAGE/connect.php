@@ -5,7 +5,7 @@
 $hosts = "localhost";
 $username = "root";
 $password = "root";
-$database = "femr_combined";
+$database = "femr";
 
 //cities_dictionary table name.  Do not change.
 $dictionaryDB = "cities_dictionary";
