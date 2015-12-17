@@ -150,7 +150,7 @@ while($row = $resultQuery->fetch_assoc()) {
 	            </form>
 	            </td>
 	         </tr>
-	   <?
+	   <?php
 	   $isResults = 1;
     endif;
 }
