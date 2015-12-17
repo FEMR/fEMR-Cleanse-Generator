@@ -13,6 +13,10 @@ warnings will be outlined below.
 
 - MAMP
 - Big Dump (http://www.ozerov.de/bigdump/)
+or
+- PHP 5.5.9 w/ mysqli
+- MySQL 5.6
+- Apache 2.4.7
 
 ### Installation and Deployment
 ##Installing MAMP

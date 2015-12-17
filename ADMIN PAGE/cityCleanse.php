@@ -65,7 +65,7 @@ if($conn->connect_error){
 
 $per_page = 20;
 
-$pages_query= $conn->query("SELECT COUNT('id') FROM femr.patients");
+$pages_query= $conn->query("SELECT COUNT('id') FROM patients");
 
 $row = $pages_query->fetch_assoc();
 
@@ -75,7 +75,7 @@ $page = (isset($_GET['page'])) ? (int) $_GET['page'] : 1;
 
 $start = ($page - 1) * $per_page;
 
-$patientCities = "SELECT city, id FROM femr.patients WHERE city != \"unknown\" && city NOT IN (SELECT name FROM cities_dictionary.mission_cities) LIMIT $start, $per_page";
+$patientCities = "SELECT city, id FROM patients WHERE city != \"unknown\" && city NOT IN (SELECT name FROM cities_dictionary.mission_cities) LIMIT $start, $per_page";
 
 
 $resultQuery = $conn->query($patientCities);
@@ -150,7 +150,7 @@ while($row = $resultQuery->fetch_assoc()) {
 	            </form>
 	            </td>
 	         </tr>
-	   <?
+	   <?php
 	   $isResults = 1;
     endif;
 }
